@@ -1,35 +1,40 @@
+#include <stdlib.h>
 #include "main.h"
+#include <limits.h>
+#include <string.h>
 
 /**
- * _atoi - convert string to int
- * @s: string
- * Return: int
+ * _atoi - coverts a string to integer
+ * @str: pointer to string to be converted
+ *
+ * Return: converted string
+ *
  */
-int _atoi(char *s)
+
+int _atoi(char *str)
 {
-	unsigned int count = 0, size = 0, oi = 0, pt = 1, m = 1, i;
+	int sign = 1, base = 0, i = 0;
 
-	while (*(s + count) != '\0')
+	for (i = 0; str[i] != '\0' && (str[i] < '0' || str[i] > '9'); i++)
 	{
-		if (size > 0 && (*(s + count) < '0' || *(s + count) > '9'))
-			break;
+		if (str[i] == '-' || str[i] == '+')
+			sign *= 1 - 2 * (str[i] == '-');
+		if (str[i + 1] == '\0')
+			return (0);
+	}
 
-		if (*(s + count) == '-')
-			pt *= -1;
-
-		if ((*(s + count) >= '0') && (*(s + count) <= '9'))
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		if (base > INT_MAX / 10	|| (base == INT_MAX / 10
+			&& str[i] - '0' > 7))
 		{
-			if (size > 0)
-				m *= 10;
-			size++;
+			if (sign == 1)
+				return (INT_MAX);
+			else
+				return (INT_MIN);
 		}
-		count++;
+		base = 10 * base + (str[i++] - '0');
 	}
 
-	for (i = count - size; i < count; i++)
-	{
-		oi = oi + ((*(s + i) - 48) * m);
-		m /= 10;
-	}
-	return (oi * pt);
+	return (base * sign);
 }
